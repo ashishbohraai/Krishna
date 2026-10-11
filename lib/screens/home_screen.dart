@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
-import 'placeholder_screen.dart';
-
+import 'gita_screen.dart';
 import 'leelas_screen.dart';
+import 'placeholder_screen.dart';
 import 'timeline_screen.dart';
+
 class _HomeTile {
   final String title;
   final String subtitle;
@@ -25,9 +26,17 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _open(BuildContext context, String title) {
- Navigator.of(context).push(
-    MaterialPageRoute(builder: (_) => title == 'Leelas' ? const LeelasScreen() : title == 'Life Timeline' ? const TimelineScreen() : PlaceholderScreen(title: title)),
-    );
+    Widget page;
+    if (title == 'Leelas') {
+      page = const LeelasScreen();
+    } else if (title == 'Life Timeline') {
+      page = const TimelineScreen();
+    } else if (title == 'Bhagavad Gita') {
+      page = const GitaScreen();
+    } else {
+      page = PlaceholderScreen(title: title);
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   @override
