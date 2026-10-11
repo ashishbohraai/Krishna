@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
-import 'gita_screen.dart';
 import 'festivals_screen.dart';
+import 'gita_screen.dart';
 import 'leelas_screen.dart';
+import 'mantras_screen.dart';
 import 'placeholder_screen.dart';
 import 'places_screen.dart';
 import 'timeline_screen.dart';
@@ -21,7 +22,7 @@ const _tiles = [
   _HomeTile('Bhagavad Gita', '18 chapters', Icons.menu_book),
   _HomeTile('Festivals', 'Janmashtami & more', Icons.celebration),
   _HomeTile('Sacred Places', 'Mathura to Dwarka', Icons.place),
-  _HomeTile('Bhajans', 'Listen & chant', Icons.music_note),
+  _HomeTile('Mantras', 'Listen & chant', Icons.music_note),
 ];
 
 class HomeScreen extends StatelessWidget {
@@ -39,6 +40,8 @@ class HomeScreen extends StatelessWidget {
       page = const FestivalsScreen();
     } else if (title == 'Sacred Places') {
       page = const PlacesScreen();
+    } else if (title == 'Mantras') {
+      page = const MantrasScreen();
     } else {
       page = PlaceholderScreen(title: title);
     }
