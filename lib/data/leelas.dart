@@ -119,7 +119,7 @@ const leelas = [
     meaning: "Sincere faith is never left unanswered, and dharma protects those who trust in it.",
     source: "Mahabharata, Sabha Parva",
   ),
-
+];
 extension LeelaTime on Leela {
   String get duration {
     final text = '${paragraphs.join(' ')} $meaning';
