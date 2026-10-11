@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 import 'gita_screen.dart';
+import 'festivals_screen.dart';
 import 'leelas_screen.dart';
 import 'placeholder_screen.dart';
 import 'timeline_screen.dart';
@@ -33,6 +34,8 @@ class HomeScreen extends StatelessWidget {
       page = const TimelineScreen();
     } else if (title == 'Bhagavad Gita') {
       page = const GitaScreen();
+    } else if (title == 'Festivals') {
+      page = const FestivalsScreen();
     } else {
       page = PlaceholderScreen(title: title);
     }
