@@ -25,7 +25,8 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _open(BuildContext context, String title) {
-  MaterialPageRoute(builder: (_) => title == 'Leelas' ? const LeelasScreen() : title == 'Life Timeline' ? const TimelineScreen() : PlaceholderScreen(title: title)),
+ Navigator.of(context).push(
+    MaterialPageRoute(builder: (_) => title == 'Leelas' ? const LeelasScreen() : title == 'Life Timeline' ? const TimelineScreen() : PlaceholderScreen(title: title)),
     );
   }
 
