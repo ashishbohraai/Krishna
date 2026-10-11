@@ -3,7 +3,7 @@ import '../data/leelas.dart';
 import '../theme/app_theme.dart';
 import 'story_screen.dart';
 
-const _numerals = ['१', '२', '३', '४', '५', '६', '७'];
+const _numerals = ['1', '2', '3', '4', '5', '6', '7'];
 const _filters = ['All', 'Gokul', 'Vrindavan', 'Mathura', 'Dwarka'];
 
 class LeelasScreen extends StatefulWidget {
