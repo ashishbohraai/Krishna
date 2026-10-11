@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 import 'placeholder_screen.dart';
 
+import 'leelas_screen.dart';
 class _HomeTile {
   final String title;
   final String subtitle;
@@ -24,7 +25,7 @@ class HomeScreen extends StatelessWidget {
 
   void _open(BuildContext context, String title) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => PlaceholderScreen(title: title)),
+      MaterialPageRoute(builder: (_) => title == 'Leelas' ? const LeelasScreen() : PlaceholderScreen(title: title)),
     );
   }
 
