@@ -5,6 +5,7 @@ import 'gita_screen.dart';
 import 'festivals_screen.dart';
 import 'leelas_screen.dart';
 import 'placeholder_screen.dart';
+import 'places_screen.dart';
 import 'timeline_screen.dart';
 
 class _HomeTile {
@@ -36,6 +37,8 @@ class HomeScreen extends StatelessWidget {
       page = const GitaScreen();
     } else if (title == 'Festivals') {
       page = const FestivalsScreen();
+    } else if (title == 'Sacred Places') {
+      page = const PlacesScreen();
     } else {
       page = PlaceholderScreen(title: title);
     }
