@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import '../data/leelas.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
@@ -12,7 +13,34 @@ class StoryScreen extends StatefulWidget {
 }
 
 class _StoryScreenState extends State<StoryScreen> {
+  final FlutterTts _tts = FlutterTts();
   bool _saved = false;
+  bool _speaking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _tts.setLanguage('en-IN');
+    _tts.setSpeechRate(0.45);
+    _tts.setCompletionHandler(() {
+      if (mounted) setState(() => _speaking = false);
+    });
+    _tts.setErrorHandler((message) {
+      if (!mounted) return;
+      setState(() => _speaking = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not play audio. Check your phone voice settings.'),
+        ),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
 
   void _goToNext() {
     final next = (widget.index + 1) % leelas.length;
@@ -21,10 +49,17 @@ class _StoryScreenState extends State<StoryScreen> {
     );
   }
 
-  void _listen() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Audio narration is coming soon')),
-    );
+  Future<void> _listen() async {
+    if (_speaking) {
+      await _tts.stop();
+      if (mounted) setState(() => _speaking = false);
+      return;
+    }
+    final leela = leelas[widget.index];
+    final text = '${leela.title}. ${leela.paragraphs.join(' ')} '
+        'The meaning. ${leela.meaning}';
+    setState(() => _speaking = true);
+    await _tts.speak(text);
   }
 
   @override
@@ -151,8 +186,8 @@ class _StoryScreenState extends State<StoryScreen> {
                 Expanded(
                   child: FilledButton.icon(
                     onPressed: _listen,
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text('Listen'),
+                    icon: Icon(_speaking ? Icons.stop : Icons.play_arrow),
+                    label: Text(_speaking ? 'Stop' : 'Listen'),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.gold,
                       foregroundColor: AppColors.background,
