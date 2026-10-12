@@ -4,7 +4,7 @@ import '../widgets/feather_motif.dart';
 
 /// To show your father's name, put it between the quotes below,
 /// for example: 'Shri Ramesh Kumar'. Leave it as '' to hide the name line.
-const dedicatedToName = '';
+const dedicatedToName = 'Late Shri Champalal Bohra';
 
 class DedicationScreen extends StatelessWidget {
   const DedicationScreen({super.key});
