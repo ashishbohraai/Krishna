@@ -73,20 +73,22 @@ class DedicationScreen extends StatelessWidget {
 
   Widget _photo() {
     return Container(
-      width: 180,
-      height: 180,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(color: AppColors.gold, width: 3),
       ),
-      child: ClipOval(
-        child: Image.asset(
-          'father_photo.jpg',
-          fit: BoxFit.cover,
-          alignment: Alignment.topCenter,
-          errorBuilder: (context, error, stackTrace) =>
-              const FeatherMotif(size: 170),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(17),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 340),
+          child: Image.asset(
+            'father_photo.jpg',
+            width: 240,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) =>
+                const FeatherMotif(size: 170),
+          ),
         ),
       ),
     );
