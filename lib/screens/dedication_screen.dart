@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 
-/// To show your father's name, put it between the quotes below,
-/// for example: 'Shri Ramesh Kumar'. Leave it as '' to hide the name line.
 const dedicatedToName = 'Late Shri Champalal Bohra';
 
 class DedicationScreen extends StatelessWidget {
@@ -20,8 +18,8 @@ class DedicationScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const FeatherMotif(size: 150),
-                const SizedBox(height: 28),
+                _photo(),
+                const SizedBox(height: 26),
                 Text(
                   'ॐ नमो भगवते वासुदेवाय',
                   textAlign: TextAlign.center,
@@ -68,6 +66,27 @@ class DedicationScreen extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _photo() {
+    return Container(
+      width: 180,
+      height: 180,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.gold, width: 3),
+      ),
+      child: ClipOval(
+        child: Image.asset(
+          'father_photo.jpg',
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+          errorBuilder: (context, error, stackTrace) =>
+              const FeatherMotif(size: 170),
         ),
       ),
     );
