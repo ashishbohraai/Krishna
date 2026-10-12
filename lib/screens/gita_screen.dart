@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
-import 'placeholder_screen.dart';
+import 'gita_chapter_screen.dart';
 
 const _chapters = [
   "Arjuna's Dilemma",
@@ -134,9 +134,7 @@ class GitaScreen extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => PlaceholderScreen(title: 'Chapter ${i + 1}'),
-          ),
+          MaterialPageRoute(builder: (_) => GitaChapterScreen(index: i)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
