@@ -11,7 +11,8 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.2.1
   flutter_tts: ^4.2.0
-  
 
 flutter:
   uses-material-design: true
+  assets:
+    - father_photo.jpg
