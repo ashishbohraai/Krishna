@@ -8,6 +8,7 @@ import 'leelas_screen.dart';
 import 'mantras_screen.dart';
 import 'placeholder_screen.dart';
 import 'places_screen.dart';
+import 'search_screen.dart';
 import 'timeline_screen.dart';
 
 class _HomeTile {
@@ -55,6 +56,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  void _onTab(BuildContext context, int index) {
+    if (index == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SearchScreen()),
+      );
+    } else if (index != 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Coming soon')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +99,7 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: 0,
+        onDestinationSelected: (i) => _onTab(context, i),
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.favorite_border), label: 'Saved'),
