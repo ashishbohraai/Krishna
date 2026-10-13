@@ -8,6 +8,7 @@ import 'leelas_screen.dart';
 import 'mantras_screen.dart';
 import 'placeholder_screen.dart';
 import 'places_screen.dart';
+import 'saved_screen.dart';
 import 'search_screen.dart';
 import 'timeline_screen.dart';
 
@@ -57,7 +58,11 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _onTab(BuildContext context, int index) {
-    if (index == 2) {
+    if (index == 1) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SavedScreen()),
+      );
+    } else if (index == 2) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const SearchScreen()),
       );
