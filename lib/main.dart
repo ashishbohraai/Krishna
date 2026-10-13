@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'services/saved_store.dart';
 import 'theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SavedStore.instance.load();
   runApp(const KrishnaApp());
 }
 
