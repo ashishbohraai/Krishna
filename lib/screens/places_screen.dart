@@ -1,28 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
-import 'placeholder_screen.dart';
 
 class _Place {
   final String region;
   final String name;
   final String subtitle;
-  const _Place(this.region, this.name, this.subtitle);
+  final String query;
+  const _Place(this.region, this.name, this.subtitle, this.query);
 }
 
+// The last value of each place is what Google Maps searches for.
+// You can change any of them to a different temple or town.
 const _places = [
-  _Place('Uttar Pradesh', 'Mathura', 'Birthplace of Shri Krishna'),
-  _Place('Uttar Pradesh', 'Gokul', 'Childhood home with Nanda and Yashoda'),
-  _Place('Uttar Pradesh', 'Vrindavan', 'Land of the flute and the Rasa Lila'),
-  _Place('Gujarat', 'Dwarka', "Krishna's kingdom by the sea"),
-  _Place('Haryana', 'Kurukshetra', 'Where the Gita was spoken'),
+  _Place(
+    'Uttar Pradesh',
+    'Mathura',
+    'Birthplace of Shri Krishna',
+    'Shri Krishna Janmabhoomi Temple, Mathura',
+  ),
+  _Place(
+    'Uttar Pradesh',
+    'Gokul',
+    'Childhood home with Nanda and Yashoda',
+    'Nand Bhavan, Gokul, Uttar Pradesh',
+  ),
+  _Place(
+    'Uttar Pradesh',
+    'Vrindavan',
+    'Land of the flute and the Rasa Lila',
+    'Banke Bihari Temple, Vrindavan',
+  ),
+  _Place(
+    'Gujarat',
+    'Dwarka',
+    "Krishna's kingdom by the sea",
+    'Dwarkadhish Temple, Dwarka, Gujarat',
+  ),
+  _Place(
+    'Haryana',
+    'Kurukshetra',
+    'Where the Gita was spoken',
+    'Jyotisar, Kurukshetra, Haryana',
+  ),
 ];
 
 class PlacesScreen extends StatelessWidget {
   const PlacesScreen({super.key});
 
-  void _showSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Maps will be connected in a later update')),
+  Future<void> _openUri(BuildContext context, Uri uri) async {
+    var opened = false;
+    try {
+      opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!opened && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not open Maps. Please check that Google Maps or a browser is installed.',
+          ),
+        ),
+      );
+    }
+  }
+
+  void _openPlace(BuildContext context, _Place p) {
+    _openUri(
+      context,
+      Uri.https('www.google.com', '/maps/search/', {
+        'api': '1',
+        'query': p.query,
+      }),
+    );
+  }
+
+  void _openRoute(BuildContext context) {
+    _openUri(
+      context,
+      Uri.https('www.google.com', '/maps/dir/', {
+        'api': '1',
+        'origin': 'Mathura, Uttar Pradesh',
+        'destination': 'Dwarka, Gujarat',
+        'travelmode': 'driving',
+      }),
     );
   }
 
@@ -50,7 +110,7 @@ class PlacesScreen extends StatelessWidget {
                 style: headingStyle(18, color: AppColors.gold),
               ),
               const Text(
-                '5 places',
+                'Tap to open in Maps',
                 style: TextStyle(fontSize: 13, color: AppColors.muted),
               ),
             ],
@@ -94,7 +154,7 @@ class PlacesScreen extends StatelessWidget {
             right: 12,
             bottom: 12,
             child: FilledButton(
-              onPressed: () => _showSoon(context),
+              onPressed: () => _openRoute(context),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.gold,
                 foregroundColor: AppColors.background,
@@ -121,9 +181,7 @@ class PlacesScreen extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => PlaceholderScreen(title: p.name)),
-        ),
+        onTap: () => _openPlace(context, p),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
@@ -168,7 +226,7 @@ class PlacesScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.muted),
+              const Icon(Icons.open_in_new, size: 20, color: AppColors.muted),
             ],
           ),
         ),
