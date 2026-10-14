@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../data/gita_chapters.dart';
+import '../services/saved_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 
@@ -14,7 +15,10 @@ class GitaChapterScreen extends StatefulWidget {
 
 class _GitaChapterScreenState extends State<GitaChapterScreen> {
   final FlutterTts _tts = FlutterTts();
+  final SavedStore _store = SavedStore.instance;
   bool _speaking = false;
+
+  String get _key => 'gita:${widget.index}';
 
   @override
   void initState() {
@@ -44,6 +48,17 @@ class _GitaChapterScreenState extends State<GitaChapterScreen> {
   void _goTo(int index) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => GitaChapterScreen(index: index)),
+    );
+  }
+
+  void _toggleSaved() {
+    final nowSaved = !_store.isSaved(_key);
+    _store.toggle(_key);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Text(nowSaved ? 'Saved' : 'Removed from Saved'),
+      ),
     );
   }
 
@@ -193,19 +208,45 @@ class _GitaChapterScreenState extends State<GitaChapterScreen> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-            child: FilledButton.icon(
-              onPressed: _listen,
-              icon: Icon(_speaking ? Icons.stop : Icons.play_arrow),
-              label: Text(_speaking ? 'Stop' : 'Listen'),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.gold,
-                foregroundColor: AppColors.background,
-                minimumSize: const Size.fromHeight(48),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+            child: Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: _listen,
+                    icon: Icon(_speaking ? Icons.stop : Icons.play_arrow),
+                    label: Text(_speaking ? 'Stop' : 'Listen'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.gold,
+                      foregroundColor: AppColors.background,
+                      minimumSize: const Size.fromHeight(48),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 10),
+                ListenableBuilder(
+                  listenable: _store,
+                  builder: (context, _) {
+                    final saved = _store.isSaved(_key);
+                    return IconButton.outlined(
+                      onPressed: _toggleSaved,
+                      tooltip: saved ? 'Remove from Saved' : 'Save chapter',
+                      icon: Icon(
+                        saved ? Icons.favorite : Icons.favorite_border,
+                        color: saved ? AppColors.gold : AppColors.cream,
+                      ),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.card,
+                        side: const BorderSide(color: AppColors.border),
+                        fixedSize: const Size(48, 48),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),
