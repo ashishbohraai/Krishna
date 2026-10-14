@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../data/leelas.dart';
+import '../services/saved_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 
@@ -14,8 +15,10 @@ class StoryScreen extends StatefulWidget {
 
 class _StoryScreenState extends State<StoryScreen> {
   final FlutterTts _tts = FlutterTts();
-  bool _saved = false;
+  final SavedStore _store = SavedStore.instance;
   bool _speaking = false;
+
+  String get _key => 'leela:${widget.index}';
 
   @override
   void initState() {
@@ -46,6 +49,17 @@ class _StoryScreenState extends State<StoryScreen> {
     final next = (widget.index + 1) % leelas.length;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => StoryScreen(index: next)),
+    );
+  }
+
+  void _toggleSaved() {
+    final nowSaved = !_store.isSaved(_key);
+    _store.toggle(_key);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Text(nowSaved ? 'Saved' : 'Removed from Saved'),
+      ),
     );
   }
 
@@ -106,7 +120,7 @@ class _StoryScreenState extends State<StoryScreen> {
             ),
             const SizedBox(height: 14),
             Text(
-              '${leela.place.toUpperCase()} · ${leela.readTime.toUpperCase()} READ',
+              '${leela.place.toUpperCase()} · ${leela.duration.toUpperCase()} READ',
               style: const TextStyle(
                 fontSize: 12,
                 letterSpacing: 1.2,
@@ -200,18 +214,24 @@ class _StoryScreenState extends State<StoryScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                IconButton.outlined(
-                  onPressed: () => setState(() => _saved = !_saved),
-                  tooltip: 'Save story',
-                  icon: Icon(
-                    _saved ? Icons.favorite : Icons.favorite_border,
-                    color: _saved ? AppColors.gold : AppColors.cream,
-                  ),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.card,
-                    side: const BorderSide(color: AppColors.border),
-                    fixedSize: const Size(48, 48),
-                  ),
+                ListenableBuilder(
+                  listenable: _store,
+                  builder: (context, _) {
+                    final saved = _store.isSaved(_key);
+                    return IconButton.outlined(
+                      onPressed: _toggleSaved,
+                      tooltip: saved ? 'Remove from Saved' : 'Save story',
+                      icon: Icon(
+                        saved ? Icons.favorite : Icons.favorite_border,
+                        color: saved ? AppColors.gold : AppColors.cream,
+                      ),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.card,
+                        side: const BorderSide(color: AppColors.border),
+                        fixedSize: const Size(48, 48),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
