@@ -6,6 +6,7 @@ import 'festivals_screen.dart';
 import 'gita_screen.dart';
 import 'leelas_screen.dart';
 import 'mantras_screen.dart';
+import 'more_screen.dart';
 import 'placeholder_screen.dart';
 import 'places_screen.dart';
 import 'saved_screen.dart';
@@ -66,9 +67,9 @@ class HomeScreen extends StatelessWidget {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const SearchScreen()),
       );
-    } else if (index != 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Coming soon')),
+    } else if (index == 3) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const MoreScreen()),
       );
     }
   }
