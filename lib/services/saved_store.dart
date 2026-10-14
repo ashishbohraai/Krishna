@@ -43,4 +43,13 @@ class SavedStore extends ChangeNotifier {
       await prefs.setStringList(_prefsKey, _keys.toList());
     } catch (_) {}
   }
+
+  Future<void> clearAll() async {
+    _keys.clear();
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_prefsKey);
+    } catch (_) {}
+  }
 }
