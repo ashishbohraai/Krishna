@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
-import 'dedication_screen.dart';
 import 'festivals_screen.dart';
 import 'gita_screen.dart';
 import 'leelas_screen.dart';
@@ -53,12 +52,6 @@ class HomeScreen extends StatelessWidget {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
-  void _openDedication(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const DedicationScreen()),
-    );
-  }
-
   void _openSettings(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const SettingsScreen()),
@@ -105,8 +98,6 @@ class HomeScreen extends StatelessWidget {
                 for (final t in _tiles) _tile(context, t),
               ],
             ),
-            const SizedBox(height: 18),
-            _dedicationCard(context),
           ],
         ),
       ),
@@ -242,48 +233,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _dedicationCard(BuildContext context) {
-    return Material(
-      color: AppColors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.border),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () => _openDedication(context),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          child: Row(
-            children: [
-              Icon(Icons.local_florist, size: 26, color: AppColors.gold),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'In loving memory',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'A dedication to my father',
-                      style: TextStyle(fontSize: 13, color: AppColors.muted),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right, color: AppColors.muted),
             ],
           ),
         ),
