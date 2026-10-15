@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../theme/app_theme.dart';
+import '../services/settings_store.dart';
 
 class _Mantra {
   final String name;
@@ -58,7 +59,7 @@ class _MantrasScreenState extends State<MantrasScreen> {
   void initState() {
     super.initState();
     _tts.setLanguage('hi-IN');
-    _tts.setSpeechRate(0.4);
+    _tts.setSpeechRate(SettingsStore.instance.voiceRate * 0.9);
     _tts.setCompletionHandler(() {
       if (mounted) setState(() => _playing = null);
     });
