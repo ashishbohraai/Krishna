@@ -11,6 +11,7 @@ import 'placeholder_screen.dart';
 import 'places_screen.dart';
 import 'saved_screen.dart';
 import 'search_screen.dart';
+import 'settings_screen.dart';
 import 'timeline_screen.dart';
 
 class _HomeTile {
@@ -58,6 +59,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  void _openSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+    );
+  }
+
   void _onTab(BuildContext context, int index) {
     if (index == 1) {
       Navigator.of(context).push(
@@ -81,7 +88,7 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
           children: [
-            _header(),
+            _header(context),
             const SizedBox(height: 16),
             _verseCard(context),
             const SizedBox(height: 20),
@@ -116,7 +123,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -131,7 +138,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         IconButton.outlined(
-          onPressed: () {},
+          onPressed: () => _openSettings(context),
           tooltip: 'Settings',
           icon: const Icon(Icons.settings_outlined),
           style: IconButton.styleFrom(
