@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../data/leelas.dart';
 import '../services/saved_store.dart';
+import '../services/settings_store.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 
@@ -24,7 +25,7 @@ class _StoryScreenState extends State<StoryScreen> {
   void initState() {
     super.initState();
     _tts.setLanguage('en-IN');
-    _tts.setSpeechRate(0.45);
+    _tts.setSpeechRate(SettingsStore.instance.voiceRate);
     _tts.setCompletionHandler(() {
       if (mounted) setState(() => _speaking = false);
     });
