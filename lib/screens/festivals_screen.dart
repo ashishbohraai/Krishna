@@ -1,41 +1,17 @@
 import 'package:flutter/material.dart';
+import '../data/festival_dates.dart';
+import '../services/calendar_helper.dart';
 import '../theme/app_theme.dart';
 import '../widgets/feather_motif.dart';
 
-class _Festival {
-  final String title;
-  final String subtitle;
-  const _Festival(this.title, this.subtitle);
-}
-
-const _festivals = [
-  _Festival('Radhashtami', 'Birth of Radha, about two weeks after Janmashtami'),
-  _Festival('Govardhan Puja', 'The day after Diwali, honouring the Govardhan lila'),
-  _Festival('Holi', 'Spring full moon, colours and the story of Radha and Krishna'),
-  _Festival('Gita Jayanti', 'Marks the day the Gita was spoken at Kurukshetra'),
-  _Festival('Ekadashi', 'The 11th lunar day, observed twice a month with fasting and prayer'),
-];
-
-class FestivalsScreen extends StatefulWidget {
+class FestivalsScreen extends StatelessWidget {
   const FestivalsScreen({super.key});
 
   @override
-  State<FestivalsScreen> createState() => _FestivalsScreenState();
-}
-
-class _FestivalsScreenState extends State<FestivalsScreen> {
-  final Set<int> _reminders = {};
-
-  void _showSoon() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Reminders will be switched on in a later update'),
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final featured = festivals.first;
+    final others = festivals.skip(1).toList();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Festivals')),
       body: ListView(
@@ -48,7 +24,7 @@ class _FestivalsScreenState extends State<FestivalsScreen> {
               style: TextStyle(fontSize: 13, color: AppColors.muted),
             ),
           ),
-          _featured(),
+          _featured(context, featured),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,23 +34,30 @@ class _FestivalsScreenState extends State<FestivalsScreen> {
                 style: headingStyle(18, color: AppColors.gold),
               ),
               const Text(
-                'Tap the bell for reminders',
+                'Tap the calendar to add',
                 style: TextStyle(fontSize: 13, color: AppColors.muted),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          for (var i = 0; i < _festivals.length; i++)
+          for (final f in others)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: _row(i),
+              child: _row(context, f),
             ),
+          const SizedBox(height: 6),
+          const Text(
+            'Dates follow the North Indian (Delhi) calendar. Some temples and '
+            'regions observe a festival a day earlier or later.',
+            style: TextStyle(fontSize: 12, height: 1.4, color: AppColors.muted),
+          ),
         ],
       ),
     );
   }
 
-  Widget _featured() {
+  Widget _featured(BuildContext context, Festival f) {
+    final next = f.nextDate();
     return Container(
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
@@ -107,24 +90,37 @@ class _FestivalsScreenState extends State<FestivalsScreen> {
                     color: Color(0xFFD9F0EE),
                   ),
                 ),
-                Text('Janmashtami', style: headingStyle(26)),
+                Text(f.name, style: headingStyle(26)),
                 const SizedBox(height: 4),
-                const SizedBox(
+                SizedBox(
                   width: 260,
                   child: Text(
-                    'Celebrating the midnight birth of Shri Krishna. The date updates every year.',
-                    style: TextStyle(
+                    f.subtitle,
+                    style: const TextStyle(
                       fontSize: 13,
                       height: 1.3,
                       color: Color(0xFFD9F0EE),
                     ),
                   ),
                 ),
+                const SizedBox(height: 8),
+                Text(
+                  next != null
+                      ? 'Next: ${formatDate(next)}'
+                      : 'More dates will be added in an update',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.gold,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 FilledButton.icon(
-                  onPressed: _showSoon,
-                  icon: const Icon(Icons.notifications_none),
-                  label: const Text('Set reminder'),
+                  onPressed: next == null
+                      ? null
+                      : () => addFestivalToCalendar(context, f, next),
+                  icon: const Icon(Icons.event_available),
+                  label: const Text('Add to calendar'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.gold,
                     foregroundColor: AppColors.background,
@@ -143,9 +139,15 @@ class _FestivalsScreenState extends State<FestivalsScreen> {
     );
   }
 
-  Widget _row(int i) {
-    final f = _festivals[i];
-    final on = _reminders.contains(i);
+  Widget _row(BuildContext context, Festival f) {
+    final next = f.nextDate();
+    final hasDates = f.dates.isNotEmpty;
+    final dateLine = hasDates
+        ? (next != null
+            ? 'Next: ${formatDate(next)}'
+            : 'More dates will be added in an update')
+        : f.frequencyNote;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
       decoration: BoxDecoration(
@@ -175,7 +177,7 @@ class _FestivalsScreenState extends State<FestivalsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  f.title,
+                  f.name,
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
@@ -189,26 +191,27 @@ class _FestivalsScreenState extends State<FestivalsScreen> {
                     color: AppColors.muted,
                   ),
                 ),
+                if (dateLine.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      dateLine,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.gold,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                if (on) {
-                  _reminders.remove(i);
-                } else {
-                  _reminders.add(i);
-                }
-              });
-              if (!on) _showSoon();
-            },
-            tooltip: 'Toggle reminder for ${f.title}',
-            icon: Icon(
-              on ? Icons.notifications_active : Icons.notifications_none,
-              color: on ? AppColors.gold : AppColors.muted,
+          if (hasDates && next != null)
+            IconButton(
+              onPressed: () => addFestivalToCalendar(context, f, next),
+              tooltip: 'Add ${f.name} to calendar',
+              icon: const Icon(Icons.event_available, color: AppColors.gold),
             ),
-          ),
         ],
       ),
     );
